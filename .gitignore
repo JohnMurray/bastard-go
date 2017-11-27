@@ -1,0 +1,6 @@
+# build/dev artifacts
+tags
+bastard-go
+
+# editor files
+*.swp

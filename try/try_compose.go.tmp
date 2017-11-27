@@ -1,0 +1,58 @@
+package try
+
+// Package try contains a Scala-like Try implementation. However you need
+// to generate a type-specific version with github.com/cheekybits/genny. You
+// can do so with a go generate tag such as:
+//
+// go:generate genny -in $PATH_TO_FILE/try_compose.go -out your_file.go gen "FromType=string, ToType=int"
+//
+// The compose file differs from the base file in that it handles compsition functions
+// from one type of try to another using fu nctions like Map, FlatMap, etc. Note that you'll
+// want to keep the package the same for the Try you are generating to/from.
+
+import (
+	"github.com/cheekybits/genny/generic"
+)
+
+type FromType = generic.Type
+type ToType = generic.Type
+
+// MapToToType safely transforms the value within the Try or returns the same Try if it is failed
+func (t *FromTypeTry) MapToToType(f func(FromType) ToType) *ToTypeTry {
+	if !t.success {
+		return &ToTypeTry{
+			success: false,
+			err:     t.err,
+		}
+	}
+	return &ToTypeTry{
+		success: true,
+		value:   f(t.value),
+		err:     nil,
+	}
+}
+
+// FlatMapToToType transforms the Try with a function that returns another Try, or cascades the original
+// Try if it is failed
+func (t *FromTypeTry) FlatMapToToType(f func(FromType) *ToTypeTry) *ToTypeTry {
+	if !t.success {
+		return &ToTypeTry{
+			success: false,
+			err:     t.err,
+		}
+	}
+	return f(t.value)
+}
+
+// FlatMapWrapToToType transforms the Try with a function that returns another Try, or cascades the original
+// Try if it is failed. This differs from FlatMap in that it handles more go-style functions that
+// return a value-error pair.
+func (t *FromTypeTry) FlatMapWrapToToType(f func(FromType) (ToType, error)) *ToTypeTry {
+	if !t.success {
+		return &ToTypeTry{
+			success: false,
+			err: t.err,
+		}
+	}
+	return ToToTypeTry(f(t.value))
+}

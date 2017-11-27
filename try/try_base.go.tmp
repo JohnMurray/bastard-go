@@ -1,0 +1,100 @@
+package try
+
+// Package try contains a Scala-like Try implementation. However you need
+// to generate a type-specific version with github.com/cheekybits/genny. You
+// can do so with a go generate tag such as:
+//
+// go:generate genny -in $PATH_TO_FILE/try_base.go -out your_file.go gen "Type=string"
+
+import (
+	"github.com/cheekybits/genny/generic"
+)
+
+// A Type is a placeholder type to be replaced with genny
+type Type generic.Type
+
+// TypeTry represents the result of an operation that may or may not have succeeded
+type TypeTry struct {
+	success bool
+	value   Type
+	err     error
+}
+
+// ToTypeTry converts a 2-tuple of value + error into a Try. The presense of a non-nil
+// error value is what determines success or failure. This makes it ideal to wrap
+// Go-style function calls to get a `Try`.
+func ToTypeTry(value Type, err error) *TypeTry {
+	return &TypeTry{
+		success: err == nil,
+		value:   value,
+		err:     err,
+	}
+}
+
+// NewTypeSuccess creates a new succeeded Try
+func NewTypeSuccess(value Type) *TypeTry {
+	return &TypeTry{
+		success: true,
+		value:   value,
+		err:     nil,
+	}
+}
+
+// NewTypeFailure creates a new failed Try
+func NewTypeFailure(err error) *TypeTry {
+	return &TypeTry{
+		success: false,
+		err:     err,
+	}
+}
+
+// IsSuccess tells if the Try is a successful Try, and thus holds a value that can be
+// extraced with GetValue
+func (t *TypeTry) IsSuccess() bool {
+	return t.success
+}
+
+// IsFailure tells if the Try is a failed Try, and thus holds an error that can be
+// extraced with GetFailures
+func (t *TypeTry) IsFailure() bool {
+	return !t.success
+}
+
+// GetValue returns a value for a successful Try. If the Try is not successful, it will
+// panic, because this is totally the right thing to do.
+func (t *TypeTry) GetValue() Type {
+	if t.IsFailure() {
+		panic("you do not know what you are doing")
+	}
+	return t.value
+}
+
+// GetFailure returns an error for a failed Try. If the Try is successful, it will
+// panic, because this is totally the right thing to do.
+func (t *TypeTry) GetFailure() error {
+	if t.IsSuccess() {
+		panic("you do not know what you are doing")
+	}
+	return t.err
+}
+
+// Recover sets a default value of a failed Try (making it a success Try). A successful Try is always
+// returned.
+func (t *TypeTry) Recover(f func() Type) *TypeTry {
+	if !t.success {
+		return &TypeTry{
+			success: true,
+			value:   f(),
+		}
+	}
+	return t
+}
+
+// RecoverWith provides a default function to call if the current Try is a failure. The return value
+// is the result of the recover function or the original Try (if the Try is a success).
+func (t *TypeTry) RecoverWith(f func() *TypeTry) *TypeTry {
+	if t.success {
+		return t
+	}
+	return f()
+}
