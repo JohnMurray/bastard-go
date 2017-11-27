@@ -20,13 +20,14 @@ mkdir try
 ```
 
 ```go
-// Generate for as many types as you like. Simply including a comma-delimited list for `Type` will cause genny
-// to generate multiple templates.
+// Generate for as many types as you like. Simply including a comma-delimited list for
+// `Type` will cause genny to generate multiple templates.
 //
 //go:generate genny -in=$GOPATH/src/github.com/johnmurray/bastard-go/try/try_base.go -out=try/try_base.go gen "Type=int,string,bool"
 
-// Another command will generate the "composition" functions which allow you to convert from one type to another
-// when using Map, FlatMap, etc. This is also necessary for generating same-type conversions. Such as:
+// Another command will generate the "composition" functions which allow you to convert
+// from one type to another // when using Map, FlatMap, etc. This is also necessary for
+// generating same-type conversions. Such as:
 //   IntTry.Map(func (i int) int { return i * 2 })
 //
 // Note that by providing multiple input types, all permutations will be generated.
