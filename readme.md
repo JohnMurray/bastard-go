@@ -34,7 +34,7 @@ mkdir try
 //go:generate genny -in=$GOPATH/src/github.com/johnmurray/bastard-go/try/try_compose.go -out=try/try_compose.go gen "FromType=int,string,bool ToType=int,string,bool"
 ```
 
-Of course you can use `genny` to generate it in a different pacakge, so read more about `genny` if you're not familiar.
+Of course you can use `genny` to generate it in a different package, so read more about `genny` if you're not familiar.
 
 
   [github_genny]: https://github.com/cheekybits/genny
