@@ -36,6 +36,7 @@ mkdir try
 ```
 
 Of course you can use `genny` to generate it in a different package, so read more about `genny` if you're not familiar.
+See my [blog post][johnmurray_io] for more details.
 
 
   [github_genny]: https://github.com/cheekybits/genny
