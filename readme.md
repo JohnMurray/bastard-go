@@ -5,7 +5,7 @@ A collection of terrible things in I felt like writing in Go.
 
 ### Try
 
-This is a Scala-like `Try` object that uses `[genny][github_genny]` to generate templates which allow it to
+This is a Scala-like `Try` object that uses [`genny`][github_genny] to generate templates which allow it to
 work very similar to the Scala version with composition functions (`Map`, `FlatMap`, `Recover`, etc). To use
 in your own projects:
 
