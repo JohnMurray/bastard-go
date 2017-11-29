@@ -13,7 +13,11 @@ go get github.com/johnmurray/bastard-go
 ```
 
 For more details on Genny and how the generation works and options to use with the command, head on over
-to their GitHub page.
+to their GitHub page. For examples, see the `examples` folder.
+
+### TOC
+  * [__Maybe__](#maybe)
+  * [__Try__](#try)
 
 
 ### Maybe
