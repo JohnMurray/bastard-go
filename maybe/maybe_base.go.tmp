@@ -1,0 +1,67 @@
+package maybe
+
+import (
+	"github.com/cheekybits/genny/generic"
+)
+
+type Type = generic.Type
+
+// TypeMaybe is a container for Type that indicates a _possible_ value or nothing.
+// This is an alternative structure to use over nil as it prevents unsafe access
+// (sort-of) and prefers safe composition over direct dereferencing.
+//
+// See Map, FlatMap, and friends.
+type TypeMaybe struct {
+	value Type
+	empty bool
+}
+
+// NewTypeSome creates a new some-type for TypeMaybe. Note that while you can store
+// the zero-value into a some-type, it is not recommended.
+func NewTypeSome(value Type) *TypeMaybe {
+	return &TypeMaybe{
+		value: value,
+		empty: false,
+	}
+}
+
+// NewTypeNone creates a new none-type for TypeMaybe. This type holds no value.
+func NewTypeNone() *TypeMaybe {
+	return &TypeMaybe{
+		empty: true,
+	}
+}
+
+// IsSome returns bool is the TypeMaybe is a some-type
+func (m *TypeMaybe) IsSome() bool {
+	return !m.empty
+}
+
+// IsNone returns bool is the TypeMaybe is a none-type
+func (m *TypeMaybe) IsNone() bool {
+	return m.empty
+}
+
+// Get is an unsafe method to get the value of a some-type. If called on a none-type,
+// it will panic.
+func (m *TypeMaybe) Get() Type {
+	if m.empty {
+		panic("You do not know what you are doing")
+	}
+	return m.value
+}
+
+// GetOrElse is safe alternative to Get as it does not panic and will return a default
+// value (passed into the function) if the current TypeMaybe is a none-type.
+func (m *TypeMaybe) GetOrElse(elseValue Type) Type {
+	if m.empty {
+		return elseValue
+	}
+	return m.value
+}
+
+func (m *TypeMaybe) With(f func(Type)) {
+	if !m.empty {
+		f(m.value)
+	}
+}

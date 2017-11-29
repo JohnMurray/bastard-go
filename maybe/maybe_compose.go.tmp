@@ -1,0 +1,36 @@
+package maybe
+
+import (
+	"github.com/cheekybits/genny/generic"
+)
+
+type FromType generic.Type
+
+// type.
+type ToType generic.Type
+
+// MapToToType allows for a safe transformation of a maybe of type FromType to a maybe
+// of type ToType. Note that the function f is only called if the FromTypeMaybe is a
+// some-type.
+func (m *FromTypeMaybe) MapToToType(f func(FromType) ToType) *ToTypeMaybe {
+	if m.empty {
+		return &ToTypeMaybe{
+			empty: true,
+		}
+	}
+	return &ToTypeMaybe{
+		value: f(m.value),
+	}
+}
+
+// FlatMapToToType allows for a safe transformation of a maybe of type FromType to a maybe
+// of type ToType. Note that the function f is only called if the FromTypeMaybe is a
+// some-type.
+func (m *FromTypeMaybe) FlatMapToToType(f func(FromType) *ToTypeMaybe) *ToTypeMaybe {
+	if m.empty {
+		return &ToTypeMaybe{
+			empty: true,
+		}
+	}
+	return f(m.value)
+}
