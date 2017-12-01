@@ -16,10 +16,16 @@ For more details on Genny and how the generation works and options to use with t
 to their GitHub page. For examples, see the `examples` folder.
 
 ### TOC
-  * [__Either__](#either)
-  * [__Maybe__](#maybe)
-  * [__Try__](#try)
 
+  * [__Templates__](#templates)
+    * [__Either__](#either)
+    * [__Maybe__](#maybe)
+    * [__Try__](#try)
+  * [__Contributing__](#contributing)
+  * [__License__](#license)
+
+
+## Templates
 
 ### Either
 
@@ -113,6 +119,16 @@ mkdir try
 
 Of course you can use `genny` to generate it in a different package, so read more about `genny` if you're not familiar.
 See my [blog post][johnmurray_io] for more details.
+
+
+## Contributing
+
+Have you'd like to implement that you think belongs in this repository? Feel free to open a PR to talk about
+your idea, or to present some code you think would fit in. The more the merrier! :-D
+
+## License
+
+Project is licensed under MIT license. Please see `LICENSE` file for full details.
 
 
   [github_genny]: https://github.com/cheekybits/genny
