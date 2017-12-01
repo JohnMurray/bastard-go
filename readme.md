@@ -16,9 +16,46 @@ For more details on Genny and how the generation works and options to use with t
 to their GitHub page. For examples, see the `examples` folder.
 
 ### TOC
+  * [__Either__](#either)
   * [__Maybe__](#maybe)
   * [__Try__](#try)
 
+
+### Either
+
+This is a right-bias `Either` type that uses [`genny`][github_genny] to generate templates which allow it to work
+very vimilar to a version using generics. However, this is probably the clearest example (in this project) where
+generics would greatly simplify the boilerplate of code-generation as it is a multi-type container that has the
+ability to map to other `Either` types with different underlying "generic" types. Creating a many-to-many mapping
+that makes generation tricky and cumbersome.
+
+To use in your own projects:
+
+```bash
+cd $YOUR_PROJECT
+mkdir either
+```
+
+```go
+// Generate for as many types as you like. Simply including a comma-delimited list for
+// `TypeA` and `TypeB` will cause genny to generate multiple templates. Note that providing
+// multiple for both inputs will create every possible combination.
+//
+//go:generate genny -in=$GOPATH/src/github.com/johnmurray/bastard-go/either/either_base.go -out=either/either_base.go gen "TypeA=int,string,bool TypeB=int,string,bool"
+
+// Another command will generate the "composition" functions which allow you to convert
+// from one type to another // when using Map, FlatMap, etc. This is also necessary for
+// generating same-type conversions. Such as:
+//   eitherStringOrInt.MapRightToInt(func (i int) int { return i * 2 })
+//
+// Note that to avoid generating duplicate functions (due to so many input types and overlapping
+// righ/left combinations) the `ToTypeA` and `ToTypeB` should be done one at a time, using the same
+// value for each:
+//
+//go:generate genny -in=$GOPATH/src/github.com/johnmurray/bastard-go/either/either_compose_1.go -out=either/either_compose.go gen "FromTypeA=int,string,bool FromTypeB=int,string,bool ToTypeA=int ToTypeB=int"
+//go:generate genny -in=$GOPATH/src/github.com/johnmurray/bastard-go/either/either_compose_2.go -out=either/either_compose.go gen "FromTypeA=int,string,bool FromTypeB=int,string,bool ToTypeA=string ToTypeB=string"
+//go:generate genny -in=$GOPATH/src/github.com/johnmurray/bastard-go/either/either_compose_3.go -out=either/either_compose.go gen "FromTypeA=int,string,bool FromTypeB=int,string,bool ToTypeA=bool ToTypeB=bool"
+```
 
 ### Maybe
 
