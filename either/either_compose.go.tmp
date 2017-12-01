@@ -1,0 +1,85 @@
+package either
+
+import (
+	"github.com/cheekybits/genny/generic"
+)
+
+type FromTypeA generic.Type
+type FromTypeB generic.Type
+type ToTypeA generic.Type
+type ToTypeB generic.Type
+
+// MapToToTypeB is a right-bias mapping function and an alias for MapRightToToTypeB
+func (e *EitherFromTypeAOrFromTypeB) MapToToTypeB(f func(FromTypeB) ToTypeB) *EitherFromTypeAOrToTypeB {
+	if e.isLeft {
+		return &EitherFromTypeAOrToTypeB {
+			left:   e.left,
+			isLeft: true,
+		}
+	}
+	return &EitherFromTypeAOrToTypeB {
+		right:  f(e.right),
+		isLeft: false,
+	}
+}
+
+// FlatMapToToTypeB is a right-bias mapping function and an alias for FlatMapRightToToTypeB
+func (e *EitherFromTypeAOrFromTypeB) FlatMapToToTypeB(f func(FromTypeB) *EitherFromTypeAOrToTypeB) *EitherFromTypeAOrToTypeB {
+	if e.isLeft {
+		return &EitherFromTypeAOrToTypeB {
+			left:   e.left,
+			isLeft: true,
+		}
+	}
+	return f(e.right)
+}
+
+// MapLeftToToTypeA maps the left'ness of the either to a new either of type EitherToTypeAOrFromTypeB
+func (e *EitherFromTypeAOrFromTypeB) MapLeftToToTypeA(f func(FromTypeA) ToTypeA) *EitherToTypeAOrFromTypeB {
+	if e.isLeft {
+		return &EitherToTypeAOrFromTypeB {
+			left:   f(e.left),
+			isLeft: true,
+		}
+	}
+	return &EitherToTypeAOrFromTypeB {
+		right:  e.right,
+		isLeft: false,
+	}
+}
+
+// MapRightToToTypeB maps the right'ness of the either to a new either of type EitherToTypeAOrFromTypeB
+func (e *EitherFromTypeAOrFromTypeB) MapRightToToTypeB(f func(FromTypeB) ToTypeB) *EitherFromTypeAOrToTypeB {
+	if e.isLeft {
+		return &EitherFromTypeAOrToTypeB {
+			left:   e.left,
+			isLeft: true,
+		}
+	}
+	return &EitherFromTypeAOrToTypeB {
+		right:  f(e.right),
+		isLeft: false,
+	}
+}
+
+// FlatMapLeftToToTypeA maps the left'ness of the either to a new Either of type EitherToTypeAOrFromTypeB
+func (e *EitherFromTypeAOrFromTypeB) FlatMapLeftToToTypeA(f func(FromTypeA) *EitherToTypeAOrFromTypeB) *EitherToTypeAOrFromTypeB {
+	if e.isLeft {
+		return f(e.left)
+	}
+	return &EitherToTypeAOrFromTypeB {
+		right:  e.right,
+		isLeft: false,
+	}
+}
+
+// FlatMapRightToToTypeB maps the right'ness of the either to a new Either of type EitherFromTypeAOrToTypeB
+func (e *EitherFromTypeAOrFromTypeB) FlatMapRightToToTypeB(f func(FromTypeB) *EitherFromTypeAOrToTypeB) *EitherFromTypeAOrToTypeB {
+	if e.isLeft {
+		return &EitherFromTypeAOrToTypeB {
+			left:   e.left,
+			isLeft: true,
+		}
+	}
+	return f(e.right)
+}

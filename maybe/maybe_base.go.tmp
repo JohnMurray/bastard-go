@@ -60,6 +60,8 @@ func (m *TypeMaybe) GetOrElse(elseValue Type) Type {
 	return m.value
 }
 
+// With allows you to pass a function with a paramter of Type as a way to execute over the some-type
+// value only if it exists.
 func (m *TypeMaybe) With(f func(Type)) {
 	if !m.empty {
 		f(m.value)

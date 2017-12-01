@@ -58,6 +58,8 @@ func (m *StringMaybe) GetOrElse(elseValue string) string {
 	return m.value
 }
 
+// With allows you to pass a function with a paramter of string as a way to execute over the some-type
+// value only if it exists.
 func (m *StringMaybe) With(f func(string)) {
 	if !m.empty {
 		f(m.value)
@@ -118,6 +120,8 @@ func (m *IntMaybe) GetOrElse(elseValue int) int {
 	return m.value
 }
 
+// With allows you to pass a function with a paramter of int as a way to execute over the some-type
+// value only if it exists.
 func (m *IntMaybe) With(f func(int)) {
 	if !m.empty {
 		f(m.value)

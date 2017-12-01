@@ -1,0 +1,70 @@
+package either
+
+// Package contains an Either type which is like a 2-tuple containing values of two different
+// types with the ability to compose and chain values and functions together depending on the
+// type. This is a very popular way to do validation where the "left" is always the error type.
+//
+// Note that this Either _is_ right-biased meaning that operations that do not work on a
+// particular side are said to be "biased", such as Map and FlatMap. These assume the existence
+// of a "left" to transform, or cascade the "right" value as if it were the error in a Try-type.
+//
+// go:generate genny -in $PATH_TO_FILE/either_base.go -out your_file.go gen "A=string B=int"
+
+import (
+	"github.com/cheekybits/genny/generic"
+)
+
+type TypeA generic.Type
+type TypeB generic.Type
+
+// EitherTypeAOrTypeB is a container for one of 2 values. Each value can be composed separately
+// to define multiple code-paths without excessive branching in client-code.
+type EitherTypeAOrTypeB struct {
+	left   TypeA
+	right  TypeB
+	isLeft bool
+}
+
+// NewEitherTypeAOrTypeBLeft is a way to create an either-value that has a left-value
+// Note the left/right'ness cannot be changed once created
+func NewEitherTypeAOrTypeBLeft(left TypeA) *EitherTypeAOrTypeB {
+	return &EitherTypeAOrTypeB{
+		left:   left,
+		isLeft: true,
+	}
+}
+
+// NewEitherTypeAOrTypeBRight is a way to create an either-value that has a right-value
+// Note that the left/right'ness cannot be changed once created
+func NewEitherTypeAOrTypeBRight(right TypeB) *EitherTypeAOrTypeB {
+	return &EitherTypeAOrTypeB{
+		right:  right,
+		isLeft: false,
+	}
+}
+
+// IsLeft checks the either type for left'ness
+func (e *EitherTypeAOrTypeB) IsLeft() bool {
+	return e.isLeft
+}
+
+// IsRight checks the either type for right'ness
+func (e *EitherTypeAOrTypeB) IsRight() bool {
+	return !e.isLeft
+}
+
+// GetLeftOrElse returns the left value or a default if the either is not a left-either
+func (e *EitherTypeAOrTypeB) GetLeftOrElse(defaultLeft TypeA) TypeA {
+	if e.isLeft {
+		return e.left
+	}
+	return defaultLeft
+}
+
+// GetRightOrElse returns the right value or a default if the either is not a right-either
+func (e *EitherTypeAOrTypeB) GetRightOrElse(defaultRight TypeB) TypeB {
+	if e.isLeft {
+		return defaultRight
+	}
+	return e.right
+}

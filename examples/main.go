@@ -19,11 +19,15 @@ func main() {
 			name: "Try Example",
 			f:    runTryExample,
 		},
+		{
+			name: "Either Example",
+			f:    runEitherExample,
+		},
 	}
 
 	for _, ex := range examples {
 		fmt.Printf("Running %s\n", ex.name)
 		ex.f()
-		fmt.Println("==============================\n\n")
+		fmt.Printf("==============================\n\n")
 	}
 }

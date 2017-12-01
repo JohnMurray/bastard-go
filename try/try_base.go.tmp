@@ -10,7 +10,6 @@ import (
 	"github.com/cheekybits/genny/generic"
 )
 
-// A Type is a placeholder type to be replaced with genny
 type Type generic.Type
 
 // TypeTry represents the result of an operation that may or may not have succeeded

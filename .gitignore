@@ -1,6 +1,7 @@
-# build/dev artifacts
+# build/dev artifacts/binaries
 tags
 bastard-go
+examples/examples
 
 # editor files
 *.swp
