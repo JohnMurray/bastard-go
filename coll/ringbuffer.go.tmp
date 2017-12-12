@@ -1,0 +1,95 @@
+package coll
+
+import (
+	"errors"
+
+	"github.com/cheekybits/genny/generic"
+)
+
+type Type generic.Type
+
+// TypeRingBuffer is a non-routine-safe ring-buffer for Type's
+type TypeRingBuffer struct {
+	buffer     []Type
+	bufferSize uint32
+	readPos    uint32
+	writePos   uint32
+
+	empty    bool //
+	emptyVal Type // used to return empty-value on error reads
+}
+
+// NewTypeRingBuffer creates a ring-buffer of a given size
+func NewTypeRingBuffer(size uint32) *TypeRingBuffer {
+	return &TypeRingBuffer{
+		buffer:     make([]Type, size),
+		bufferSize: size,
+		readPos:    0,
+		writePos:   0,
+		empty:      true,
+	}
+}
+
+// HasItems tells you if there are more items to read. Most useful in a
+// for loop.
+//  buf := NewTypeRingBuffer(32)
+//  // Add elements to buffer
+//  for buf.HasItems() {
+//  	// can likely ignore the error since it is returned only if there
+//  	// are no items to read.
+//  	item, _ := buf.Pop()
+//  	// use item
+//  }
+func (b *TypeRingBuffer) HasItems() bool {
+	return !b.empty
+}
+
+// Push pushes a value onto the ring buffer or returns an error if the ring-buffer
+// is full and cannot be used.
+func (b *TypeRingBuffer) Push(item Type) error {
+	if b.writePos != b.readPos {
+		b.buffer[b.writePos] = item
+		b.writePos = (b.writePos + 1) % b.bufferSize
+		return nil
+	} else if b.empty {
+		b.empty = false
+		b.buffer[b.writePos] = item
+		b.writePos = (b.writePos + 1) % b.bufferSize
+		return nil
+	}
+
+	return errors.New("Ring buffer has no spare capacity and cannot be written to")
+}
+
+// Pop reads a value from the ring buffer or returns an error if there are
+// no values to read.
+func (b *TypeRingBuffer) Pop() (Type, error) {
+	if b.HasItems() {
+		item := b.buffer[b.readPos]
+		b.readPos = (b.readPos + 1) % b.bufferSize
+		if b.readPos == b.writePos {
+			b.empty = true
+		}
+		return item, nil
+	}
+
+	return b.emptyVal, errors.New("No items to read from TypeRingBuffer")
+}
+
+// Clear empties the buffer by resetting the read and write positions. Please note
+// that no values are overwritten and references will still hang around. If you are
+// expecting for GC to clear up the contents of the buffer, look at Drain.
+func (b *TypeRingBuffer) Clear() {
+	b.readPos = 0
+	b.writePos = 0
+	b.empty = true
+}
+
+// Drain is similar to clear except that the entire buffer is written over with default
+// values to allow for GC to collect on the buffer's contents.
+func (b *TypeRingBuffer) Drain() {
+	b.Clear()
+	for i := range b.buffer {
+		b.buffer[i] = b.emptyVal
+	}
+}
