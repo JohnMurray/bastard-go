@@ -5,3 +5,7 @@ examples/examples
 
 # editor files
 *.swp
+
+
+# Files generated for testing of templates
+coll/ringbuffer_string.go

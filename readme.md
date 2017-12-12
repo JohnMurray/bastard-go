@@ -15,9 +15,18 @@ go get github.com/johnmurray/bastard-go
 For more details on Genny and how the generation works and options to use with the command, head on over
 to their GitHub page. For examples, see the `examples` folder.
 
+__Fair Warning:__ This code is just me playing around with what it would look like if Go has some sort of
+generic programming capability and/or me just feeling like writing something ridiculous in Go. You likely
+shouldn't use any of this in production code. If you really want to, feel free but I make absolutely no
+promises that any of this code is correct or safe.
+
 ### TOC
 
-  * [__Templates__](#templates)
+  * [__Concurrent Types__](#concurrent-types)
+    * [__Future__](#future)
+  * [__Data Structures__](#data-structures)
+    * [__coll.Ringbuffer__](#collringbuffer)
+  * [__Functional Types__](#functional-types)
     * [__Either__](#either)
     * [__Maybe__](#maybe)
     * [__Try__](#try)
@@ -25,7 +34,20 @@ to their GitHub page. For examples, see the `examples` folder.
   * [__License__](#license)
 
 
-## Templates
+## Concurrent Types
+
+### Future
+
+// TODO: write docs
+
+## Data Structures
+
+### coll.Ringbuffer
+
+While writing a scheduler for [__Future__](#future)s, I needed a way to distribute work amongst workers and
+wanted to use a ring buffer because that sounded like a lot more fun. 
+
+## Functional Types
 
 ### Either
 
